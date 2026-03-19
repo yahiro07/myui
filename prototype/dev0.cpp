@@ -11,6 +11,8 @@
 
 namespace dev0 {
 
+using namespace myui;
+
 class ParametersBridge {
 public:
   ParametersBridge() {}

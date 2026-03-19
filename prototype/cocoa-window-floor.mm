@@ -9,6 +9,8 @@
 #include <functional>
 #include <memory>
 
+using namespace myui;
+
 class CocoaWindowFloor;
 
 static BLRgba32 colorFromUint32(uint32_t color) { return BLRgba32(color); }
@@ -455,4 +457,4 @@ public:
 
 @end
 
-IWindowFloor *createWindowFloor() { return new CocoaWindowFloor(); }
+IWindowFloor *myui::createWindowFloor() { return new CocoaWindowFloor(); }

@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <functional>
 
+namespace myui {
+
 class IDrawingContext {
 public:
   virtual ~IDrawingContext() = default;
@@ -44,3 +46,5 @@ public:
 };
 
 IWindowFloor *createWindowFloor();
+
+} // namespace myui
