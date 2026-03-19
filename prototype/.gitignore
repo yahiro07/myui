@@ -1,0 +1,4 @@
+build/
+.cache/
+3rdparty/
+Makefile
