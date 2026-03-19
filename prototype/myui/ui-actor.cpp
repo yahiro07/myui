@@ -63,19 +63,11 @@ void UiActor::drawNode(Node *node, NodeBox &box) {
 }
 
 void UiActor::handlePointerEventInput(const PointerEvent &e) {
-  gInputState.x = e.x;
-  gInputState.y = e.y;
-  gInputState.buttons = e.buttons;
-  gInputState.pressed = (e.type == PointerEventType::Down);
-  gInputState.released = (e.type == PointerEventType::Up);
-  gInputState.hold = (e.buttons != 0);
+  affectPointerEventToInputState(gInputState, e);
 }
 
 void UiActor::updatePointerStateOnFrameEnd() {
-  gInputState.pressed = false;
-  gInputState.released = false;
-  gInputState.prevX = gInputState.x;
-  gInputState.prevY = gInputState.y;
+  updateInputStateOnFrameEnd(gInputState);
 }
 
 NodeHandle UiActor::rootBox(int w, int h, UiLayoutMode layout,

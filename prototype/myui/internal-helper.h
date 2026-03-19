@@ -1,5 +1,7 @@
 #pragma once
 #include "internal-types.h"
+#include "public-types.h"
+#include "window-floor.h"
 #include <source_location>
 
 namespace myui {
@@ -50,6 +52,23 @@ static void createLocalInputState(InputState &input, InputState &gInputState,
     input.prevX -= box.w / 2;
     input.prevY -= box.h / 2;
   }
+}
+
+static void affectPointerEventToInputState(InputState &input,
+                                           const PointerEvent &e) {
+  input.x = e.x;
+  input.y = e.y;
+  input.buttons = e.buttons;
+  input.pressed = (e.type == PointerEventType::Down);
+  input.released = (e.type == PointerEventType::Up);
+  input.hold = (e.buttons != 0);
+}
+
+static void updateInputStateOnFrameEnd(InputState &input) {
+  input.pressed = false;
+  input.released = false;
+  input.prevX = input.x;
+  input.prevY = input.y;
 }
 
 } // namespace myui
