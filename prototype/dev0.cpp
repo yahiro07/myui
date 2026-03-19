@@ -129,8 +129,7 @@ public:
 
   void setup() {
     windowFloor.setRenderCallback([this] {
-      // render0(); // ok
-      render(); // 画面でない
+      render();
       ui.updatePointerStateOnFrameEnd();
       ui.debugFirstFrame = false;
     });
