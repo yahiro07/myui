@@ -1,6 +1,7 @@
 #include "../../lib/core/renderer.h"
 #include "../../lib/core/ui-actor.h"
-#include "../../lib/window/window-floor.h"
+#include "../../lib/editor-frame/editor-frame.h"
+#include "../../lib/window/window.h"
 #include <algorithm>
 #include <cstdio>
 #include <functional>
@@ -81,75 +82,55 @@ void addKnobB(UiActor &ui, ParametersBridge &params) {
   });
 }
 
-class EditorView {
-  WindowFloor &windowFloor;
-  Renderer &renderer;
-  UiActor &ui;
-  AppModel appModel;
-
-  void render(int w, int h) {
-    ui.beginFrame();
-    auto root = ui.rootBox(w, h).hCenter();
-    root.draw([&](auto &dc) { dc.fillRect(0, 0, w, h, 0xff448800); });
-    root.sub([&] {
-      auto panel = ui.box(500, 300).hCenter(20);
-      panel.draw([](auto &dc) { dc.fillRect(0, 0, 500, 300, 0xffaabbcc); });
-      panel.sub([&] {
-        addKnobA(ui, appModel, 0, 0xff0000ff);
-        addKnobB(ui, appModel.parametersBridge);
-        auto knobC = ui.box(100, 100);
-        knobC.draw([&](auto &dc, auto &input) {
-          dc.strokeCircle(50, 50, 50, 0xffFF8800);
-          if (input.hold) {
-            dc.fillCircle(50, 50, 50, 0xffFF8800);
-          }
-        });
-        auto knobD = ui.box(100, 100);
-        knobD.draw([&](auto &dc, InputState &input) {
-          dc.strokeCircle(50, 50, 50, 0xffFF8800);
-        });
+void render(UiActor &ui, AppModel &appModel, int w, int h) {
+  ui.beginFrame();
+  auto root = ui.rootBox(w, h).hCenter();
+  root.draw([&](auto &dc) { dc.fillRect(0, 0, w, h, 0xff448800); });
+  root.sub([&] {
+    auto panel = ui.box(500, 300).hCenter(20);
+    panel.draw([](auto &dc) { dc.fillRect(0, 0, 500, 300, 0xffaabbcc); });
+    panel.sub([&] {
+      addKnobA(ui, appModel, 0, 0xff0000ff);
+      addKnobB(ui, appModel.parametersBridge);
+      auto knobC = ui.box(100, 100);
+      knobC.draw([&](auto &dc, auto &input) {
+        dc.strokeCircle(50, 50, 50, 0xffFF8800);
+        if (input.hold) {
+          dc.fillCircle(50, 50, 50, 0xffFF8800);
+        }
+      });
+      auto knobD = ui.box(100, 100);
+      knobD.draw([&](auto &dc, InputState &input) {
+        dc.strokeCircle(50, 50, 50, 0xffFF8800);
       });
     });
-    ui.endFrame();
-  }
-
-public:
-  EditorView(WindowFloor &windowFloor, Renderer &renderer, UiActor &ui,
-             ParametersBridge &parametersBridge)
-      : windowFloor(windowFloor), renderer(renderer), ui(ui),
-        appModel(parametersBridge) {}
-
-  void setup() {
-    windowFloor.setRenderCallback([this](int w, int h) {
-      renderer.resize(w, h);
-      renderer.beginFrame(0x00000000);
-      render(w, h);
-      renderer.endFrame();
-      windowFloor.setImageData(renderer.getImageData());
-      ui.updatePointerStateOnFrameEnd();
-      ui.debugFirstFrame = false;
-    });
-    windowFloor.subscribePointer(
-        [this](const PointerEvent &e) { ui.handlePointerEventInput(e); });
-  }
-  void tearDown() {
-    windowFloor.clearRenderCallback();
-    windowFloor.unsubscribePointer();
-  }
-
-  void run() { windowFloor.run(); }
-};
+  });
+  ui.endFrame();
+}
 
 void entry() {
   printf("dev0 entry\n");
-  auto windowFloor = std::unique_ptr<WindowFloor>(createWindowFloor());
+  auto window = createWindow();
+  auto editorFrame = createEditorFrame();
+  editorFrame->attachToParent(window->getRootViewHandle());
   auto renderer = createBlend2dRenderer();
   UiActor uiActor(*renderer);
   ParametersBridge parametersBridge;
-  EditorView editorView{*windowFloor, *renderer, uiActor, parametersBridge};
-  editorView.setup();
-  editorView.run();
-  editorView.tearDown();
+  AppModel appModel(parametersBridge);
+  editorFrame->setRenderCallback([&](int w, int h) {
+    renderer->resize(w, h);
+    renderer->beginFrame(0x00000000);
+    render(uiActor, appModel, w, h);
+    renderer->endFrame();
+    editorFrame->setImageData(renderer->getImageData());
+    uiActor.updatePointerStateOnFrameEnd();
+    uiActor.debugFirstFrame = false;
+  });
+  editorFrame->subscribePointer(
+      [&](const PointerEvent &e) { uiActor.handlePointerEventInput(e); });
+  window->runEventLoop();
+  editorFrame->clearRenderCallback();
+  editorFrame->unsubscribePointer();
 }
 
 } // namespace dev0

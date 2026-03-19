@@ -1,7 +1,4 @@
 #pragma once
-
-#include "../core/bridge-types.h"
-#include <functional>
 #include <memory>
 
 namespace myui {
