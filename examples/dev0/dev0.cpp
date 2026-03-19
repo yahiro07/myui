@@ -1,4 +1,5 @@
-#include "myui/ui-actor.h"
+#include "../../lib/core/ui-actor.h"
+#include "../../lib/window/window-floor.h"
 #include <algorithm>
 #include <blend2d/blend2d.h>
 #include <cstdio>

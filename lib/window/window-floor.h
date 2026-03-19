@@ -1,21 +1,9 @@
 #pragma once
-#include "public-types.h"
+#include "../core/bridge-types.h"
+#include "../core/core-public-types.h"
 #include <functional>
 
 namespace myui {
-
-enum class PointerEventType {
-  Down,
-  Move,
-  Up,
-};
-
-struct PointerEvent {
-  PointerEventType type;
-  int x;
-  int y;
-  int buttons;
-};
 
 class WindowFloor {
 public:

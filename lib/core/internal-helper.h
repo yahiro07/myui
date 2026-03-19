@@ -1,7 +1,7 @@
 #pragma once
-#include "internal-types.h"
-#include "public-types.h"
-#include "window-floor.h"
+#include "bridge-types.h"
+#include "core-internal-types.h"
+#include "core-public-types.h"
 #include <source_location>
 
 namespace myui {

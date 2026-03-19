@@ -23,8 +23,6 @@ FetchContent_MakeAvailable(blend2d)
 
 # ----------
 
-add_executable(${PROJECT_NAME} main.cpp dev0.cpp myui/node-handle.cpp
-                               myui/ui-actor.cpp myui/cocoa-window-floor.mm)
-set_source_files_properties(myui/cocoa-window-floor.mm
-                            PROPERTIES COMPILE_OPTIONS "-fobjc-arc")
-target_link_libraries(${PROJECT_NAME} blend2d::blend2d "-framework Cocoa")
+add_subdirectory(lib)
+
+add_subdirectory(examples/dev0)

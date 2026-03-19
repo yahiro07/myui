@@ -49,7 +49,7 @@ void UiActor::drawNode(Node *node, NodeBox &box) {
   auto centered = node->drawCentered;
   dc.strokeRect(box.x, box.y, box.w, box.h, 0x88888888);
 
-  auto bl = dc.devGetBlend2dContext();
+  auto &bl = dc.devGetBlend2dContext();
   InputState input;
   createLocalInputState(input, gInputState, box, centered);
   bl.save();

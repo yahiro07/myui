@@ -1,11 +1,12 @@
-#include "common-types.h"
+#include "bridge-types.h"
+#include "core-public-types.h"
 #include <memory>
 
 namespace myui {
 
-class DrawingContext {
+class Blend2dRenderer : public DrawingContext {
 public:
-  virtual ~DrawingContext() = default;
+  virtual ~Blend2dRenderer() = default;
   virtual void fillRect(int x, int y, int w, int h, uint32_t color) = 0;
   virtual void strokeRect(int x, int y, int w, int h, uint32_t color) = 0;
   virtual void fillCircle(int cx, int cy, int r, uint32_t color) = 0;
@@ -13,6 +14,7 @@ public:
 
   virtual ImageData &getImageData() const = 0;
 };
-std::unique_ptr<DrawingContext> createDrawingContext(); // blend2d
+
+std::unique_ptr<Blend2dRenderer> createBlend2dRenderer();
 
 } // namespace myui

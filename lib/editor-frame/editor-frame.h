@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../core/common-types.h"
+#include "../core/bridge-types.h"
 #include <functional>
 #include <memory>
 
