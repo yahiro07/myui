@@ -1,0 +1,70 @@
+#pragma once
+#include "public-types.h"
+#include <functional>
+
+namespace myui {
+
+struct Node;
+class TreeBuilder;
+
+template <class> inline constexpr bool always_false_v = false;
+
+class NodeHandle {
+private:
+  TreeBuilder *treeBuilder;
+  Node &node;
+
+private:
+  void pushParent(Node *node);
+  void popParent();
+  void setNodeLayout(Node &node, UiLayoutMode layout, int gap);
+  void setDrawFn(Node &node,
+                 std::function<void(DrawingContext &, InputState &)> drawFn,
+                 bool centered);
+
+public:
+  NodeHandle(Node &node, TreeBuilder *treeBuilder)
+      : treeBuilder(treeBuilder), node(node) {}
+
+  NodeHandle &hCenter(int gap = 0) {
+    setNodeLayout(node, LA_HCentered, gap);
+    return *this;
+  }
+
+  template <class F> NodeHandle &sub(F &&fn) {
+    pushParent(&node);
+    fn();
+    popParent();
+    return *this;
+  }
+
+private:
+  template <class F>
+  std::function<void(DrawingContext &, InputState &)> wrapDrawFn(F &&fn) {
+    if constexpr (requires {
+                    fn(std::declval<DrawingContext &>(),
+                       std::declval<InputState &>());
+                  }) {
+      return std::forward<F>(fn);
+    } else if constexpr (requires { fn(std::declval<DrawingContext &>()); }) {
+      return [stored = std::forward<F>(fn)](
+                 DrawingContext &dc, InputState &input) mutable { stored(dc); };
+    } else {
+      // static_assert(false, "draw() requires fn(dc, input) or fn(dc)");
+      static_assert(always_false_v<F>,
+                    "draw() requires fn(dc, input) or fn(dc)");
+    }
+  }
+
+public:
+  template <class F> NodeHandle &draw(F &&fn) {
+    setDrawFn(node, wrapDrawFn(std::forward<F>(fn)), false);
+    return *this;
+  }
+  template <class F> NodeHandle &drawC(F &&fn) {
+    setDrawFn(node, wrapDrawFn(std::forward<F>(fn)), true);
+    return *this;
+  }
+};
+
+} // namespace myui

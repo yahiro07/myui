@@ -1,6 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
-#include "interfaces.h"
+#include "window-floor.h"
 
 #include <CoreGraphics/CoreGraphics.h>
 #include <blend2d/blend2d.h>
@@ -15,7 +15,7 @@ class CocoaWindowFloor;
 
 static BLRgba32 colorFromUint32(uint32_t color) { return BLRgba32(color); }
 
-class Blend2DDrawingContext : public IDrawingContext {
+class Blend2DDrawingContext : public DrawingContext {
 private:
   BLContext *context = nullptr;
 
@@ -76,7 +76,7 @@ public:
 
 @end
 
-class CocoaWindowFloor : public IWindowFloor {
+class CocoaWindowFloor : public WindowFloor {
 private:
   NSWindow *window = nil;
   CocoaWindowFloorView *view = nil;
@@ -123,7 +123,7 @@ private:
 public:
   ~CocoaWindowFloor() override { finalize(); }
 
-  IDrawingContext &getDrawingContext() override { return drawingContext; }
+  DrawingContext &getDrawingContext() override { return drawingContext; }
 
   void setRenderCallback(std::function<void()> callback) override {
     renderCallback = std::move(callback);
@@ -457,4 +457,4 @@ public:
 
 @end
 
-IWindowFloor *myui::createWindowFloor() { return new CocoaWindowFloor(); }
+WindowFloor *myui::createWindowFloor() { return new CocoaWindowFloor(); }

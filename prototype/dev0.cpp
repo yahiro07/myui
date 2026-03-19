@@ -1,5 +1,4 @@
-#include "interfaces.h"
-#include "myui.h"
+#include "myui/ui-actor.h"
 #include <algorithm>
 #include <blend2d/blend2d.h>
 #include <cstdio>
@@ -82,10 +81,9 @@ void addKnobB(UiActor &ui, ParametersBridge &params) {
 }
 
 class EditorView {
-  IWindowFloor &windowFloor;
+  WindowFloor &windowFloor;
+  UiActor &ui;
   AppModel appModel;
-
-  UiActor ui{windowFloor.getDrawingContext()};
 
   void render0() {
     ui.beginFrame();
@@ -125,12 +123,14 @@ class EditorView {
   }
 
 public:
-  EditorView(IWindowFloor &windowFloor, ParametersBridge &parametersBridge)
-      : windowFloor(windowFloor), appModel(parametersBridge) {}
+  EditorView(WindowFloor &windowFloor, UiActor &ui,
+             ParametersBridge &parametersBridge)
+      : windowFloor(windowFloor), ui(ui), appModel(parametersBridge) {}
 
   void setup() {
     windowFloor.setRenderCallback([this] {
-      render();
+      // render0(); // ok
+      render(); // 画面でない
       ui.updatePointerStateOnFrameEnd();
       ui.debugFirstFrame = false;
     });
@@ -147,9 +147,10 @@ public:
 
 void entry() {
   printf("dev0 entry\n");
-  auto windowFloor = std::unique_ptr<IWindowFloor>(createWindowFloor());
+  auto windowFloor = std::unique_ptr<WindowFloor>(createWindowFloor());
+  UiActor uiActor(windowFloor->getDrawingContext());
   ParametersBridge parametersBridge;
-  EditorView editorView{*windowFloor, parametersBridge};
+  EditorView editorView{*windowFloor, uiActor, parametersBridge};
   editorView.setup();
   editorView.run();
   editorView.tearDown();
