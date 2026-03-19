@@ -1,6 +1,6 @@
 #pragma once
 #include "../core/bridge-types.h"
-#include "../core/core-public-types.h"
+// #include "../core/core-public-types.h"
 #include <functional>
 
 namespace myui {
@@ -9,9 +9,10 @@ class WindowFloor {
 public:
   virtual ~WindowFloor() = default;
 
-  virtual DrawingContext &getDrawingContext() = 0;
+  virtual void setImageData(const ImageData &imageData) = 0;
 
-  virtual void setRenderCallback(std::function<void()> callback) = 0;
+  virtual void
+  setRenderCallback(std::function<void(int width, int height)> callback) = 0;
   virtual void clearRenderCallback() = 0;
 
   virtual void
@@ -22,4 +23,5 @@ public:
 };
 
 WindowFloor *createWindowFloor();
+
 } // namespace myui

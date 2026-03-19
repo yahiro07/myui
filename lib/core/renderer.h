@@ -1,20 +1,20 @@
 #include "bridge-types.h"
 #include "core-public-types.h"
+#include <cstdint>
 #include <memory>
 
 namespace myui {
 
-class Blend2dRenderer : public DrawingContext {
+class Renderer : public DrawingContext {
 public:
-  virtual ~Blend2dRenderer() = default;
-  virtual void fillRect(int x, int y, int w, int h, uint32_t color) = 0;
-  virtual void strokeRect(int x, int y, int w, int h, uint32_t color) = 0;
-  virtual void fillCircle(int cx, int cy, int r, uint32_t color) = 0;
-  virtual void strokeCircle(int cx, int cy, int r, uint32_t color) = 0;
+  virtual ~Renderer() = default;
 
-  virtual ImageData &getImageData() const = 0;
+  virtual bool resize(int width, int height) = 0;
+  virtual void beginFrame(uint32_t clearColor = 0x00000000) = 0;
+  virtual void endFrame() = 0;
+  virtual const ImageData &getImageData() const = 0;
 };
 
-std::unique_ptr<Blend2dRenderer> createBlend2dRenderer();
+std::unique_ptr<Renderer> createBlend2dRenderer();
 
 } // namespace myui

@@ -4,9 +4,10 @@
 namespace myui {
 
 struct ImageData {
-  uint32_t *buffer;
-  int width;
-  int height;
+  const uint8_t *buffer = nullptr;
+  int width = 0;
+  int height = 0;
+  int strideBytes = 0;
 };
 
 enum class PointerEventType {

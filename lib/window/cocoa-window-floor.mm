@@ -3,7 +3,6 @@
 #include "window-floor.h"
 
 #include <CoreGraphics/CoreGraphics.h>
-#include <blend2d/blend2d.h>
 
 #include <cstdint>
 #include <functional>
@@ -12,56 +11,6 @@
 using namespace myui;
 
 class CocoaWindowFloor;
-
-static BLRgba32 colorFromUint32(uint32_t color) { return BLRgba32(color); }
-
-class Blend2DDrawingContext : public DrawingContext {
-private:
-  BLContext *context = nullptr;
-
-public:
-  void setContext(BLContext *nextContext) { context = nextContext; }
-
-  void fillRect(int x, int y, int w, int h, uint32_t color) override {
-    if (context == nullptr) {
-      return;
-    }
-    context->set_comp_op(BL_COMP_OP_SRC_OVER);
-    context->set_fill_style(colorFromUint32(color));
-    context->fill_rect(BLRect(x, y, w, h));
-  }
-
-  void strokeRect(int x, int y, int w, int h, uint32_t color) override {
-    if (context == nullptr) {
-      return;
-    }
-    context->set_comp_op(BL_COMP_OP_SRC_OVER);
-    context->set_stroke_style(colorFromUint32(color));
-    context->set_stroke_width(1.0);
-    context->stroke_rect(BLRect(x, y, w, h));
-  }
-
-  void fillCircle(int cx, int cy, int r, uint32_t color) override {
-    if (context == nullptr) {
-      return;
-    }
-    context->set_comp_op(BL_COMP_OP_SRC_OVER);
-    context->set_fill_style(colorFromUint32(color));
-    context->fill_circle(cx, cy, r);
-  }
-
-  void strokeCircle(int cx, int cy, int r, uint32_t color) override {
-    if (context == nullptr) {
-      return;
-    }
-    context->set_comp_op(BL_COMP_OP_SRC_OVER);
-    context->set_stroke_style(colorFromUint32(color));
-    context->set_stroke_width(1.0);
-    context->stroke_circle(cx, cy, r);
-  }
-
-  BLContext &devGetBlend2dContext() override { return *context; }
-};
 
 @interface CocoaWindowFloorView : NSView
 
@@ -83,36 +32,16 @@ private:
   CocoaWindowFloorDelegate *delegate = nil;
   NSTimer *displayTimer = nil;
 
-  Blend2DDrawingContext drawingContext;
-  BLImage surface;
-
   std::function<void(const PointerEvent &)> pointerListenerFn;
-  std::function<void()> renderCallback;
+  std::function<void(int width, int height)> renderCallback;
+
+  ImageData currentImageData{};
+  bool hasImageData = false;
 
   int width = 800;
   int height = 600;
   int buttonFlags = 0;
   bool running = false;
-
-  bool ensureSurface(int nextWidth, int nextHeight) {
-    if (nextWidth <= 0 || nextHeight <= 0) {
-      return false;
-    }
-    if (surface.width() == nextWidth && surface.height() == nextHeight) {
-      return true;
-    }
-
-    BLImage nextSurface;
-    if (nextSurface.create(nextWidth, nextHeight, BL_FORMAT_PRGB32) !=
-        BL_SUCCESS) {
-      return false;
-    }
-
-    surface = std::move(nextSurface);
-    width = nextWidth;
-    height = nextHeight;
-    return true;
-  }
 
   void requestRedraw() {
     if (view != nil) {
@@ -123,9 +52,15 @@ private:
 public:
   ~CocoaWindowFloor() override { finalize(); }
 
-  DrawingContext &getDrawingContext() override { return drawingContext; }
+  void setImageData(const ImageData &imageData) override {
+    currentImageData = imageData;
+    hasImageData =
+        (currentImageData.buffer != nullptr && currentImageData.width > 0 &&
+         currentImageData.height > 0 && currentImageData.strideBytes > 0);
+  }
 
-  void setRenderCallback(std::function<void()> callback) override {
+  void setRenderCallback(
+      std::function<void(int width, int height)> callback) override {
     renderCallback = std::move(callback);
   }
 
@@ -238,24 +173,14 @@ public:
     const NSRect bounds = targetView.bounds;
     const int targetWidth = (int)NSWidth(bounds);
     const int targetHeight = (int)NSHeight(bounds);
-    if (!ensureSurface(targetWidth, targetHeight)) {
-      return;
-    }
 
-    BLContext context(surface);
-    context.set_comp_op(BL_COMP_OP_SRC_COPY);
-    context.fill_all(BLRgba32(0, 0, 0, 0));
-
-    drawingContext.setContext(&context);
+    width = targetWidth;
+    height = targetHeight;
     if (renderCallback) {
-      renderCallback();
+      renderCallback(targetWidth, targetHeight);
     }
-    drawingContext.setContext(nullptr);
 
-    context.end();
-
-    BLImageData imageData{};
-    if (surface.get_data(&imageData) != BL_SUCCESS) {
+    if (!hasImageData) {
       return;
     }
 
@@ -270,16 +195,18 @@ public:
         static_cast<CGBitmapInfo>(kCGImageAlphaPremultipliedFirst);
 
     CGDataProviderRef provider = CGDataProviderCreateWithData(
-        nullptr, imageData.pixel_data, imageData.size.h * imageData.stride,
+        nullptr, currentImageData.buffer,
+        (size_t)currentImageData.height * (size_t)currentImageData.strideBytes,
         nullptr);
     if (provider == nullptr) {
       CGColorSpaceRelease(colorSpace);
       return;
     }
 
-    CGImageRef image = CGImageCreate(
-        imageData.size.w, imageData.size.h, 8, 32, imageData.stride, colorSpace,
-        bitmapInfo, provider, nullptr, false, kCGRenderingIntentDefault);
+    CGImageRef image =
+        CGImageCreate(currentImageData.width, currentImageData.height, 8, 32,
+                      currentImageData.strideBytes, colorSpace, bitmapInfo,
+                      provider, nullptr, false, kCGRenderingIntentDefault);
 
     if (image != nullptr) {
       CGContextSaveGState(cgContext);
@@ -287,8 +214,8 @@ public:
       CGContextTranslateCTM(cgContext, 0.0, bounds.size.height);
       CGContextScaleCTM(cgContext, 1.0, -1.0);
       CGContextDrawImage(cgContext,
-                         CGRectMake(0.0, 0.0, (CGFloat)imageData.size.w,
-                                    (CGFloat)imageData.size.h),
+                         CGRectMake(0.0, 0.0, (CGFloat)currentImageData.width,
+                                    (CGFloat)currentImageData.height),
                          image);
       CGContextRestoreGState(cgContext);
       CGImageRelease(image);
@@ -312,9 +239,6 @@ public:
       [displayTimer invalidate];
       displayTimer = nil;
     }
-
-    drawingContext.setContext(nullptr);
-    surface.reset();
 
     if (window != nil) {
       [window setDelegate:nil];

@@ -13,7 +13,8 @@ public:
   virtual void removeFromParent() = 0;
   virtual void setBounds(int x, int y, int width, int height) = 0;
 
-  virtual void setRenderCallback(std::function<void()> callback) = 0;
+  virtual void
+  setRenderCallback(std::function<void(int width, int height)> callback) = 0;
   virtual void clearRenderCallback() = 0;
 
   virtual void

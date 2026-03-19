@@ -1,7 +1,7 @@
+#include "../../lib/core/renderer.h"
 #include "../../lib/core/ui-actor.h"
 #include "../../lib/window/window-floor.h"
 #include <algorithm>
-#include <blend2d/blend2d.h>
 #include <cstdio>
 #include <functional>
 #include <memory>
@@ -83,24 +83,14 @@ void addKnobB(UiActor &ui, ParametersBridge &params) {
 
 class EditorView {
   WindowFloor &windowFloor;
+  Renderer &renderer;
   UiActor &ui;
   AppModel appModel;
 
-  void render0() {
+  void render(int w, int h) {
     ui.beginFrame();
-    auto &dc0 = windowFloor.getDrawingContext();
-    dc0.fillRect(0, 0, 800, 600, 0xffffffff);
-    dc0.fillRect(0, 0, 20, 20, 0xffff0000);
-    dc0.fillRect(20, 0, 20, 20, 0xff00ff00);
-    dc0.fillRect(40, 0, 20, 20, 0xff0000ff);
-    dc0.fillRect(60, 0, 20, 20, 0x80ff0088);
-    ui.endFrame();
-  }
-
-  void render() {
-    ui.beginFrame();
-    auto root = ui.rootBox(800, 600).hCenter();
-    root.draw([&](auto &dc) { dc.fillRect(0, 0, 800, 600, 0xff448800); });
+    auto root = ui.rootBox(w, h).hCenter();
+    root.draw([&](auto &dc) { dc.fillRect(0, 0, w, h, 0xff448800); });
     root.sub([&] {
       auto panel = ui.box(500, 300).hCenter(20);
       panel.draw([](auto &dc) { dc.fillRect(0, 0, 500, 300, 0xffaabbcc); });
@@ -124,13 +114,18 @@ class EditorView {
   }
 
 public:
-  EditorView(WindowFloor &windowFloor, UiActor &ui,
+  EditorView(WindowFloor &windowFloor, Renderer &renderer, UiActor &ui,
              ParametersBridge &parametersBridge)
-      : windowFloor(windowFloor), ui(ui), appModel(parametersBridge) {}
+      : windowFloor(windowFloor), renderer(renderer), ui(ui),
+        appModel(parametersBridge) {}
 
   void setup() {
-    windowFloor.setRenderCallback([this] {
-      render();
+    windowFloor.setRenderCallback([this](int w, int h) {
+      renderer.resize(w, h);
+      renderer.beginFrame(0x00000000);
+      render(w, h);
+      renderer.endFrame();
+      windowFloor.setImageData(renderer.getImageData());
       ui.updatePointerStateOnFrameEnd();
       ui.debugFirstFrame = false;
     });
@@ -148,9 +143,10 @@ public:
 void entry() {
   printf("dev0 entry\n");
   auto windowFloor = std::unique_ptr<WindowFloor>(createWindowFloor());
-  UiActor uiActor(windowFloor->getDrawingContext());
+  auto renderer = createBlend2dRenderer();
+  UiActor uiActor(*renderer);
   ParametersBridge parametersBridge;
-  EditorView editorView{*windowFloor, uiActor, parametersBridge};
+  EditorView editorView{*windowFloor, *renderer, uiActor, parametersBridge};
   editorView.setup();
   editorView.run();
   editorView.tearDown();
