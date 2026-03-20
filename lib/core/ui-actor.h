@@ -3,14 +3,14 @@
 #include "internal-helper.h"
 #include "layouter.h"
 #include "node-handle.h"
-#include <blend2d/blend2d.h>
 #include <deque>
 #include <memory>
 #include <source_location>
 
 namespace myui {
 
-struct NodeBox;
+void drawNodeWithTranslate(DrawingContext &dc, internal::Node *node,
+                           internal::NodeBox &box, InputState &gInputState);
 
 class UiActor {
 private:
@@ -43,20 +43,7 @@ private:
   }
 
   void drawNode(Node *node, NodeBox &box) {
-    auto centered = node->drawCentered;
-    dc.strokeRect(box.x, box.y, box.w, box.h, 0x88888888);
-
-    BLContext *bl = (BLContext *)dc.devGetBlend2dContext();
-    InputState input;
-    createLocalInputState(input, gInputState, box, centered);
-    bl->save();
-    if (centered) {
-      bl->translate(box.x + (float)box.w / 2, box.y + (float)box.h / 2);
-    } else {
-      bl->translate(box.x, box.y);
-    }
-    node->drawFn(dc, input);
-    bl->restore();
+    drawNodeWithTranslate(dc, node, box, gInputState);
   }
 
 public:
