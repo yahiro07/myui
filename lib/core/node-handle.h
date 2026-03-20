@@ -31,12 +31,6 @@ private:
     node.layout = layout;
     node.gap = gap;
   }
-  void setDrawFn(Node &node,
-                 std::function<void(DrawingContext &, InputState &)> drawFn,
-                 bool centered) {
-    node.drawFn = drawFn;
-    node.drawCentered = centered;
-  }
 
 public:
   NodeHandle &hCenter(int gap = 0) {
@@ -44,6 +38,7 @@ public:
     return *this;
   }
 
+public:
   template <class F> NodeHandle &sub(F &&fn) {
     pushParent(&node);
     fn();
@@ -52,6 +47,13 @@ public:
   }
 
 private:
+  void setDrawFn(Node &node,
+                 std::function<void(DrawingContext &, InputState &)> drawFn,
+                 bool centered) {
+    node.drawFn = std::move(drawFn);
+    node.drawCentered = centered;
+  }
+
   template <class F>
   std::function<void(DrawingContext &, InputState &)> wrapDrawFn(F &&fn) {
     if constexpr (requires {
@@ -71,10 +73,16 @@ private:
 
 public:
   template <class F> NodeHandle &draw(F &&fn) {
+    if (ro.debugFirstFrame) {
+      printf("size of drawFn: %llu %d\n", node.id, (int)sizeof(fn));
+    }
     setDrawFn(node, wrapDrawFn(std::forward<F>(fn)), false);
     return *this;
   }
   template <class F> NodeHandle &drawC(F &&fn) {
+    if (ro.debugFirstFrame) {
+      printf("size of drawFn: %llu %d\n", node.id, (int)sizeof(fn));
+    }
     setDrawFn(node, wrapDrawFn(std::forward<F>(fn)), true);
     return *this;
   }
