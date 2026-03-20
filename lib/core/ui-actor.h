@@ -1,6 +1,5 @@
 #pragma once
-#include "bridge-types.h"
-#include "core-public-types.h"
+#include "core-types.h"
 #include "internal-helper.h"
 #include "layouter.h"
 #include "node-handle.h"
@@ -86,17 +85,17 @@ void UiActor::drawNode(Node *node, NodeBox &box) {
   auto centered = node->drawCentered;
   dc.strokeRect(box.x, box.y, box.w, box.h, 0x88888888);
 
-  auto &bl = dc.devGetBlend2dContext();
+  BLContext *bl = (BLContext *)dc.devGetBlend2dContext();
   InputState input;
   createLocalInputState(input, gInputState, box, centered);
-  bl.save();
+  bl->save();
   if (centered) {
-    bl.translate(box.x + (float)box.w / 2, box.y + (float)box.h / 2);
+    bl->translate(box.x + (float)box.w / 2, box.y + (float)box.h / 2);
   } else {
-    bl.translate(box.x, box.y);
+    bl->translate(box.x, box.y);
   }
   node->drawFn(dc, input);
-  bl.restore();
+  bl->restore();
 }
 
 void UiActor::handlePointerEventInput(const PointerEvent &e) {

@@ -1,5 +1,4 @@
 #pragma once
-#include <blend2d/blend2d.h>
 #include <cstdint>
 #include <functional>
 
@@ -15,7 +14,7 @@ public:
 
   // expose blend2d context directly in development phase, not for production
   // use
-  virtual BLContext &devGetBlend2dContext() = 0;
+  virtual void *devGetBlend2dContext() = 0; // returning BLContext*
 };
 
 struct InputState {
@@ -32,6 +31,30 @@ struct InputState {
 };
 
 enum UiLayoutMode { LA_Default, LA_HStack, LA_VStack, LA_HCentered };
+
+} // namespace myui
+
+namespace myui {
+
+struct ImageData {
+  const uint8_t *buffer = nullptr;
+  int width = 0;
+  int height = 0;
+  int strideBytes = 0;
+};
+
+enum class PointerEventType {
+  Down,
+  Move,
+  Up,
+};
+
+struct PointerEvent {
+  PointerEventType type;
+  int x;
+  int y;
+  int buttons; // 1:left, 2:center, 4:right
+};
 
 } // namespace myui
 

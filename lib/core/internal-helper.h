@@ -1,6 +1,5 @@
 #pragma once
-#include "bridge-types.h"
-#include "core-public-types.h"
+#include "core-types.h"
 #include <source_location>
 
 namespace myui {

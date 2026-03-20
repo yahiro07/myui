@@ -1,5 +1,5 @@
 #pragma once
-#include "core-public-types.h"
+#include "core-types.h"
 
 namespace myui {
 

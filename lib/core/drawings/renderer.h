@@ -1,5 +1,4 @@
-#include "../bridge-types.h"
-#include "../core-public-types.h"
+#include "../core-types.h"
 #include <cstdint>
 #include <memory>
 
