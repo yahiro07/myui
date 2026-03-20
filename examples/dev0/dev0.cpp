@@ -1,4 +1,4 @@
-#include "../../lib/core/renderer.h"
+#include "../../lib/core/drawings/renderer.h"
 #include "../../lib/core/ui-actor.h"
 #include "../../lib/editor-frame/editor-frame.h"
 #include "../../lib/window/window.h"

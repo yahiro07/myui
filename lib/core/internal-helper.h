@@ -1,6 +1,5 @@
 #pragma once
 #include "bridge-types.h"
-#include "core-internal-types.h"
 #include "core-public-types.h"
 #include <source_location>
 

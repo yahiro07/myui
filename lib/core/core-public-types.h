@@ -1,6 +1,7 @@
 #pragma once
 #include <blend2d/blend2d.h>
 #include <cstdint>
+#include <functional>
 
 namespace myui {
 
@@ -31,5 +32,29 @@ struct InputState {
 };
 
 enum UiLayoutMode { LA_Default, LA_HStack, LA_VStack, LA_HCentered };
+
+} // namespace myui
+
+namespace myui {
+struct Node {
+  uint64_t id;
+  int w;
+  int h;
+  UiLayoutMode layout;
+  int gap = 0;
+  Node *firstChild = nullptr;
+  Node *lastChild = nullptr;
+  Node *nextSibling = nullptr;
+  std::function<void(DrawingContext &dc, InputState &input)> drawFn = nullptr;
+  bool drawCentered = false;
+};
+
+struct NodeBox {
+  uint64_t id;
+  int x;
+  int y;
+  int w;
+  int h;
+};
 
 } // namespace myui

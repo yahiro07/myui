@@ -1,4 +1,4 @@
-#include "core-internal-types.h"
+#include "core-public-types.h"
 #include <stack>
 
 namespace myui {
