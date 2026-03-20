@@ -2,8 +2,8 @@
 #include "../../lib/core/ui-actor.h"
 #include "../../lib/editor-frame/editor-frame.h"
 #include "../../lib/window/window.h"
-#include "blend2d/core/context.h"
 #include <algorithm>
+#include <blend2d/blend2d.h>
 #include <cstdio>
 #include <functional>
 #include <memory>
