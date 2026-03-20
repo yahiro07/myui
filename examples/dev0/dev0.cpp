@@ -2,6 +2,7 @@
 #include "../../lib/core/ui-actor.h"
 #include "../../lib/editor-frame/editor-frame.h"
 #include "../../lib/window/window.h"
+#include "blend2d/core/context.h"
 #include <algorithm>
 #include <cstdio>
 #include <functional>
@@ -49,14 +50,14 @@ void addKnobA(UiActor &ui, AppModel &model, int paramId, int color) {
     auto &params = model.parametersBridge;
     auto hit = sqrt(input.x * input.x + input.y * input.y) < 50;
 
-    auto bl = dc.devGetBlend2dContext();
+    BLContext *bl = (BLContext *)dc.devGetBlend2dContext();
     dc.strokeCircle(0, 0, 50, color);
     if (hit && input.hold) {
       dc.fillCircle(0, 0, 50, 0xff0000ff);
     }
     auto value = params.get(paramId);
     auto angle = (value * 2 - 1) * 135;
-    bl.rotate(angle * 3.14159 / 180);
+    bl->rotate(angle * 3.14159 / 180);
     dc.fillRect(-3, -50, 6, 25, 0xffff8800);
     if (hit && input.hold) {
       auto newValue = std::clamp(value - input.deltaY * 0.01f, 0.0f, 1.0f);

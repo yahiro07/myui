@@ -104,7 +104,7 @@ public:
     context.stroke_circle(cx, cy, r);
   }
 
-  BLContext &devGetBlend2dContext() override { return context; }
+  void *devGetBlend2dContext() override { return &context; }
 
   const ImageData &getImageData() const override { return imageData; }
 };
