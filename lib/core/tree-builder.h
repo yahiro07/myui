@@ -10,7 +10,7 @@ public:
   Node *currentParent = nullptr;
   std::stack<Node *> parentStack;
 
-  void reset() {
+  void clear() {
     rootNode = nullptr;
     currentParent = nullptr;
     parentStack = {};

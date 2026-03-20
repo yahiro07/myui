@@ -6,23 +6,26 @@ namespace myui {
 
 template <class> inline constexpr bool always_false_v = false;
 
+struct UiActorRoamingObject {
+  internal::TreeBuilder &treeBuilder;
+  bool &debugFirstFrame;
+};
+
 class NodeHandle {
 private:
   using Node = internal::Node;
-  using TreeBuilder = internal::TreeBuilder;
 
 private:
-  TreeBuilder *treeBuilder;
   Node &node;
+  UiActorRoamingObject &ro;
 
 public:
-  NodeHandle(Node &node, TreeBuilder *treeBuilder)
-      : treeBuilder(treeBuilder), node(node) {}
+  NodeHandle(Node &node, UiActorRoamingObject &ro) : node(node), ro(ro) {}
 
 private:
-  void pushParent(Node *node) { treeBuilder->pushParent(node); }
+  void pushParent(Node *node) { ro.treeBuilder.pushParent(node); }
 
-  void popParent() { treeBuilder->popParent(); }
+  void popParent() { ro.treeBuilder.popParent(); }
 
   void setNodeLayout(Node &node, UiLayoutMode layout, int gap) {
     node.layout = layout;

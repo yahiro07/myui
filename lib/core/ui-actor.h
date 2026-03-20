@@ -4,7 +4,6 @@
 #include "layouter.h"
 #include "node-handle.h"
 #include <deque>
-#include <memory>
 #include <source_location>
 
 namespace myui {
@@ -18,28 +17,26 @@ private:
   using NodeBox = internal::NodeBox;
   using TreeBuilder = internal::TreeBuilder;
 
+private:
+  DrawingContext &dc;
+  InputState gInputState{};
+  int seqNoteIdCounter = 0;
+  TreeBuilder treeBuilder;
+  std::deque<Node> nodeList;
+  UiActorRoamingObject roamingObject{treeBuilder, debugFirstFrame};
+
 public:
   bool debugFirstFrame = true;
-  UiActor(DrawingContext &dc) : dc(dc) {
-    treeBuilder = std::make_unique<TreeBuilder>();
-    nodeList = std::make_unique<std::deque<Node>>();
-  }
+  UiActor(DrawingContext &dc) : dc(dc) {}
   ~UiActor() = default;
   UiActor(const UiActor &) = delete;
   UiActor &operator=(const UiActor &) = delete;
 
 private:
-  DrawingContext &dc;
-  InputState gInputState{};
-  int seqNoteIdCounter = 0;
-  std::unique_ptr<TreeBuilder> treeBuilder;
-  std::unique_ptr<std::deque<Node>> nodeList;
-
-private:
   Node *createNode(uint64_t id, int w, int h, UiLayoutMode layout) {
     Node node{id, w, h, layout};
-    nodeList->push_back(node);
-    return &nodeList->back();
+    nodeList.push_back(node);
+    return &nodeList.back();
   }
 
   void drawNode(Node *node, NodeBox &box) {
@@ -52,12 +49,12 @@ public:
       printf("beginFrame\n");
     }
     seqNoteIdCounter = 0;
-    treeBuilder->reset();
+    treeBuilder.clear();
   }
 
   void endFrame() {
-    if (treeBuilder->rootNode) {
-      flushLayout(treeBuilder->rootNode, [&](Node *node, NodeBox &box) {
+    if (treeBuilder.rootNode) {
+      flushLayout(treeBuilder.rootNode, [&](Node *node, NodeBox &box) {
         if (node->drawFn) {
           drawNode(node, box);
         }
@@ -66,7 +63,7 @@ public:
     if (debugFirstFrame) {
       printf("endFrame\n");
     }
-    nodeList->clear();
+    nodeList.clear();
   }
 
   NodeHandle
@@ -74,16 +71,16 @@ public:
           std::source_location loc = std::source_location::current()) {
     auto boxId = internal::createBoxId(loc, seqNoteIdCounter++);
     auto node = createNode(boxId, w, h, layout);
-    treeBuilder->setRootNode(node);
-    return NodeHandle(*node, treeBuilder.get());
+    treeBuilder.setRootNode(node);
+    return NodeHandle(*node, roamingObject);
   }
 
   NodeHandle box(int w, int h, UiLayoutMode layout = LA_Default,
                  std::source_location loc = std::source_location::current()) {
     auto boxId = internal::createBoxId(loc, seqNoteIdCounter++);
     auto node = createNode(boxId, w, h, layout);
-    treeBuilder->linkNodeToParentAndSiblings(node);
-    return NodeHandle(*node, treeBuilder.get());
+    treeBuilder.linkNodeToParentAndSiblings(node);
+    return NodeHandle(*node, roamingObject);
   }
 
   void handlePointerEventInput(const PointerEvent &e) {
