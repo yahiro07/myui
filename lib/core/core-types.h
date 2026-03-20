@@ -58,7 +58,7 @@ struct PointerEvent {
 
 } // namespace myui
 
-namespace myui {
+namespace myui::internal {
 struct Node {
   uint64_t id;
   int w;
@@ -80,4 +80,4 @@ struct NodeBox {
   int h;
 };
 
-} // namespace myui
+} // namespace myui::internal

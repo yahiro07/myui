@@ -1,7 +1,7 @@
 #pragma once
 #include "core-types.h"
 
-namespace myui {
+namespace myui::internal {
 
 inline NodeBox createNodeBox(uint64_t id, int x, int y, int w, int h) {
   return {id, x, y, w, h};
@@ -71,4 +71,4 @@ inline void flushLayout(Node *rootNode,
   applyLayout(rootNode, rootBox);
 }
 
-} // namespace myui
+} // namespace myui::internal

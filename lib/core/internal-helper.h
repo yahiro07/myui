@@ -2,7 +2,7 @@
 #include "core-types.h"
 #include <source_location>
 
-namespace myui {
+namespace myui::internal {
 
 inline size_t createBoxId(const std::source_location &loc, int index) {
   size_t h = 1469598103934665603ull;
@@ -24,7 +24,7 @@ inline size_t createBoxId(const std::source_location &loc, int index) {
 }
 
 static void createLocalInputState(InputState &input, InputState &gInputState,
-                                  NodeBox &box, bool centered) {
+                                  internal::NodeBox &box, bool centered) {
   auto hit = (gInputState.x >= box.x && gInputState.x < box.x + box.w &&
               gInputState.y >= box.y && gInputState.y < box.y + box.h);
   input.x = gInputState.x - box.x;
@@ -69,4 +69,4 @@ static void updateInputStateOnFrameEnd(InputState &input) {
   input.prevY = input.y;
 }
 
-} // namespace myui
+} // namespace myui::internal

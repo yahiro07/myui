@@ -1,7 +1,7 @@
 #include "core-types.h"
 #include <stack>
 
-namespace myui {
+namespace myui::internal {
 
 class TreeBuilder {
 public:
@@ -40,4 +40,4 @@ public:
   }
 };
 
-} // namespace myui
+} // namespace myui::internal

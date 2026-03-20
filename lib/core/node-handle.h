@@ -5,12 +5,13 @@
 
 namespace myui {
 
-struct Node;
-class TreeBuilder;
-
 template <class> inline constexpr bool always_false_v = false;
 
 class NodeHandle {
+private:
+  using Node = internal::Node;
+  using TreeBuilder = internal::TreeBuilder;
+
 private:
   TreeBuilder *treeBuilder;
   Node &node;

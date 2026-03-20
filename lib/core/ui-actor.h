@@ -13,6 +13,11 @@ namespace myui {
 struct NodeBox;
 
 class UiActor {
+private:
+  using Node = internal::Node;
+  using NodeBox = internal::NodeBox;
+  using TreeBuilder = internal::TreeBuilder;
+
 public:
   bool debugFirstFrame = true;
   UiActor(DrawingContext &dc) : dc(dc) {
@@ -80,7 +85,7 @@ public:
   NodeHandle
   rootBox(int w, int h, UiLayoutMode layout = LA_Default,
           std::source_location loc = std::source_location::current()) {
-    auto boxId = createBoxId(loc, seqNoteIdCounter++);
+    auto boxId = internal::createBoxId(loc, seqNoteIdCounter++);
     auto node = createNode(boxId, w, h, layout);
     treeBuilder->setRootNode(node);
     return NodeHandle(*node, treeBuilder.get());
@@ -88,18 +93,18 @@ public:
 
   NodeHandle box(int w, int h, UiLayoutMode layout = LA_Default,
                  std::source_location loc = std::source_location::current()) {
-    auto boxId = createBoxId(loc, seqNoteIdCounter++);
+    auto boxId = internal::createBoxId(loc, seqNoteIdCounter++);
     auto node = createNode(boxId, w, h, layout);
     treeBuilder->linkNodeToParentAndSiblings(node);
     return NodeHandle(*node, treeBuilder.get());
   }
 
   void handlePointerEventInput(const PointerEvent &e) {
-    affectPointerEventToInputState(gInputState, e);
+    internal::affectPointerEventToInputState(gInputState, e);
   }
 
   void updatePointerStateOnFrameEnd() {
-    updateInputStateOnFrameEnd(gInputState);
+    internal::updateInputStateOnFrameEnd(gInputState);
   }
 };
 
