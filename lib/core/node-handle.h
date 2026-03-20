@@ -15,18 +15,27 @@ private:
   TreeBuilder *treeBuilder;
   Node &node;
 
-private:
-  void pushParent(Node *node);
-  void popParent();
-  void setNodeLayout(Node &node, UiLayoutMode layout, int gap);
-  void setDrawFn(Node &node,
-                 std::function<void(DrawingContext &, InputState &)> drawFn,
-                 bool centered);
-
 public:
   NodeHandle(Node &node, TreeBuilder *treeBuilder)
       : treeBuilder(treeBuilder), node(node) {}
 
+private:
+  void pushParent(Node *node) { treeBuilder->pushParent(node); }
+
+  void popParent() { treeBuilder->popParent(); }
+
+  void setNodeLayout(Node &node, UiLayoutMode layout, int gap) {
+    node.layout = layout;
+    node.gap = gap;
+  }
+  void setDrawFn(Node &node,
+                 std::function<void(DrawingContext &, InputState &)> drawFn,
+                 bool centered) {
+    node.drawFn = drawFn;
+    node.drawCentered = centered;
+  }
+
+public:
   NodeHandle &hCenter(int gap = 0) {
     setNodeLayout(node, LA_HCentered, gap);
     return *this;
@@ -67,20 +76,5 @@ public:
     return *this;
   }
 };
-
-void NodeHandle::pushParent(Node *node) { treeBuilder->pushParent(node); }
-
-void NodeHandle::popParent() { treeBuilder->popParent(); }
-
-void NodeHandle::setNodeLayout(Node &node, UiLayoutMode layout, int gap) {
-  node.layout = layout;
-  node.gap = gap;
-}
-void NodeHandle::setDrawFn(
-    Node &node, std::function<void(DrawingContext &, InputState &)> drawFn,
-    bool centered) {
-  node.drawFn = drawFn;
-  node.drawCentered = centered;
-}
 
 } // namespace myui
