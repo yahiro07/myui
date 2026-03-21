@@ -3,7 +3,7 @@
 #include "../core/ui-frame-driver.h"
 #include "../drawings/renderer.h"
 #include "../editor-frame/editor-frame.h"
-#include "window.h"
+#include "../window/window.h"
 
 namespace myui {
 

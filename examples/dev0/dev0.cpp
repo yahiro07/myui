@@ -106,26 +106,10 @@ auto createRootView(AppModel &appModel) {
 
 void entry() {
   printf("dev0 entry\n");
-  auto window = createWindow();
-  auto editorFrame = createEditorFrame();
-  editorFrame->attachToParent(window->getRootViewHandle());
-  auto renderer = createBlend2dRenderer();
-  auto dc = static_cast<DrawingContext *>(renderer.get());
-  UiFrameDriver frameDriver{*dc};
+  MyuiApplication app;
   ParametersBridge parametersBridge;
   AppModel appModel(parametersBridge);
-  editorFrame->setRenderCallback([&](int w, int h) {
-    renderer->resize(w, h);
-    renderer->beginFrame(0x00000000);
-    frameDriver.runFrame(createRootView(appModel), w, h);
-    renderer->endFrame();
-    editorFrame->setImageData(renderer->getImageData());
-  });
-  editorFrame->subscribePointer(
-      [&](const PointerEvent &e) { frameDriver.handlePointerEventInput(e); });
-  window->runEventLoop();
-  editorFrame->clearRenderCallback();
-  editorFrame->unsubscribePointer();
+  app.run(createRootView(appModel));
 }
 
 } // namespace dev0
