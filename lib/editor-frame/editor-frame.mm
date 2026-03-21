@@ -9,6 +9,7 @@
 #include <memory>
 
 using namespace myui;
+using namespace myui::internal;
 
 class CocoaEditorFrame;
 

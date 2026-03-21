@@ -1,7 +1,25 @@
 #pragma once
+#include "bridge-types.h"
 #include "ui-actor.h"
 
 namespace myui {
+
+static void affectPointerEventToInputState(InputState &input,
+                                           const internal::PointerEvent &e) {
+  input.x = e.x;
+  input.y = e.y;
+  input.buttons = e.buttons;
+  input.pressed = (e.type == internal::PointerEventType::Down);
+  input.released = (e.type == internal::PointerEventType::Up);
+  input.hold = (e.buttons != 0);
+}
+
+static void updateInputStateOnFrameEnd(InputState &input) {
+  input.pressed = false;
+  input.released = false;
+  input.prevX = input.x;
+  input.prevY = input.y;
+}
 
 class UiFrameDriver {
 private:
@@ -39,12 +57,12 @@ public:
     bus.debugFirstFrame = false;
   }
 
-  void handlePointerEventInput(const PointerEvent &e) {
-    internal::affectPointerEventToInputState(bus.gInputState, e);
+  void handlePointerEventInput(const internal::PointerEvent &e) {
+    affectPointerEventToInputState(bus.gInputState, e);
   }
 
   void updatePointerStateOnFrameEnd() {
-    internal::updateInputStateOnFrameEnd(bus.gInputState);
+    updateInputStateOnFrameEnd(bus.gInputState);
   }
 };
 

@@ -52,21 +52,4 @@ static void createLocalInputState(InputState &input, InputState &gInputState,
   }
 }
 
-static void affectPointerEventToInputState(InputState &input,
-                                           const PointerEvent &e) {
-  input.x = e.x;
-  input.y = e.y;
-  input.buttons = e.buttons;
-  input.pressed = (e.type == PointerEventType::Down);
-  input.released = (e.type == PointerEventType::Up);
-  input.hold = (e.buttons != 0);
-}
-
-static void updateInputStateOnFrameEnd(InputState &input) {
-  input.pressed = false;
-  input.released = false;
-  input.prevX = input.x;
-  input.prevY = input.y;
-}
-
 } // namespace myui::internal

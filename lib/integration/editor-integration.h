@@ -1,4 +1,5 @@
 #pragma once
+#include "../core/bridge-types.h"
 #include "../core/ui-frame-driver.h"
 #include "../drawings/renderer.h"
 #include "../editor-frame/editor-frame.h"
@@ -41,7 +42,7 @@ public:
       renderer->endFrame();
       editorFrame->setImageData(renderer->getImageData());
     });
-    editorFrame->subscribePointer([this](const PointerEvent &e) {
+    editorFrame->subscribePointer([this](const internal::PointerEvent &e) {
       if (frameDriver)
         frameDriver->handlePointerEventInput(e);
     });

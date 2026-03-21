@@ -1,4 +1,5 @@
 #pragma once
+#include "../core/bridge-types.h"
 #include "../core/ui-actor.h"
 #include "../core/ui-frame-driver.h"
 #include "../drawings/renderer.h"
@@ -17,8 +18,9 @@ public:
     auto renderer = createBlend2dRenderer();
     auto dc = static_cast<DrawingContext *>(renderer.get());
     UiFrameDriver frameDriver{*dc};
-    editorFrame->subscribePointer(
-        [&](const PointerEvent &e) { frameDriver.handlePointerEventInput(e); });
+    editorFrame->subscribePointer([&](const internal::PointerEvent &e) {
+      frameDriver.handlePointerEventInput(e);
+    });
 
     editorFrame->setRenderCallback([&](int w, int h) {
       renderer->resize(w, h);

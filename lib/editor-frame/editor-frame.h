@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../core/bridge-types.h"
 #include "../core/core-types.h"
 #include <functional>
 #include <memory>
@@ -17,8 +18,8 @@ public:
   setRenderCallback(std::function<void(int width, int height)> callback) = 0;
   virtual void clearRenderCallback() = 0;
 
-  virtual void
-  subscribePointer(std::function<void(const PointerEvent &)> callback) = 0;
+  virtual void subscribePointer(
+      std::function<void(const internal::PointerEvent &)> callback) = 0;
   virtual void unsubscribePointer() = 0;
 
   virtual void setImageData(const ImageData &imageData) = 0;
