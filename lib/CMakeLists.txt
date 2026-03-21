@@ -7,7 +7,7 @@ add_subdirectory(infrastructure/window)
 
 add_library(${NAME} STATIC)
 
-target_sources(${NAME} PRIVATE myui-lib.cpp)
+target_sources(${NAME} PRIVATE dummy-entry.cpp)
 
 target_link_libraries(${NAME} PUBLIC myui-core myui-drawings myui-editor-frame
                                      myui-window)
