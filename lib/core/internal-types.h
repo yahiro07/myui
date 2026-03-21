@@ -1,6 +1,5 @@
 #pragma once
 #include "core-types.h"
-#include <functional>
 
 namespace myui::internal {
 struct Node {
@@ -12,8 +11,7 @@ struct Node {
   Node *firstChild = nullptr;
   Node *lastChild = nullptr;
   Node *nextSibling = nullptr;
-  std::function<void(DrawingContext &dc, InputState &input)> drawFn = nullptr;
-  bool drawCentered = false;
+  bool skip = false;
 };
 
 struct NodeBox {
@@ -22,6 +20,7 @@ struct NodeBox {
   int y;
   int w;
   int h;
+  bool skip;
 };
 
 } // namespace myui::internal

@@ -25,4 +25,5 @@ FetchContent_MakeAvailable(blend2d)
 
 add_subdirectory(lib)
 
+add_subdirectory(examples/hello)
 add_subdirectory(examples/dev0)

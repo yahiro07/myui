@@ -8,7 +8,7 @@ static BLRgba32 colorFromUint32(uint32_t color) { return BLRgba32(color); }
 class Blend2dRendererImpl : public Renderer {
 private:
   BLImage surface;
-  BLContext context;
+  BLContext ctx;
   bool hasContext = false;
 
   ImageData imageData{};
@@ -41,10 +41,10 @@ public:
       return;
     }
 
-    context = BLContext(surface);
+    ctx = BLContext(surface);
     hasContext = true;
-    context.set_comp_op(BL_COMP_OP_SRC_COPY);
-    context.fill_all(colorFromUint32(clearColor));
+    ctx.set_comp_op(BL_COMP_OP_SRC_COPY);
+    ctx.fill_all(colorFromUint32(clearColor));
   }
 
   void endFrame() override {
@@ -52,7 +52,7 @@ public:
       return;
     }
 
-    context.end();
+    ctx.end();
     hasContext = false;
 
     BLImageData blImageData{};
@@ -67,44 +67,45 @@ public:
   }
 
   void fillRect(int x, int y, int w, int h, uint32_t color) override {
-    if (!hasContext) {
-      return;
-    }
-    context.set_comp_op(BL_COMP_OP_SRC_OVER);
-    context.set_fill_style(colorFromUint32(color));
-    context.fill_rect(BLRect(x, y, w, h));
+    ctx.set_comp_op(BL_COMP_OP_SRC_OVER);
+    ctx.set_fill_style(colorFromUint32(color));
+    ctx.fill_rect(BLRect(x, y, w, h));
   }
 
   void strokeRect(int x, int y, int w, int h, uint32_t color) override {
-    if (!hasContext) {
-      return;
-    }
-    context.set_comp_op(BL_COMP_OP_SRC_OVER);
-    context.set_stroke_style(colorFromUint32(color));
-    context.set_stroke_width(1.0);
-    context.stroke_rect(BLRect(x, y, w, h));
+    ctx.set_comp_op(BL_COMP_OP_SRC_OVER);
+    ctx.set_stroke_style(colorFromUint32(color));
+    ctx.set_stroke_width(1.0);
+    ctx.stroke_rect(BLRect(x, y, w, h));
   }
 
   void fillCircle(int cx, int cy, int r, uint32_t color) override {
     if (!hasContext) {
       return;
     }
-    context.set_comp_op(BL_COMP_OP_SRC_OVER);
-    context.set_fill_style(colorFromUint32(color));
-    context.fill_circle(cx, cy, r);
+    ctx.set_comp_op(BL_COMP_OP_SRC_OVER);
+    ctx.set_fill_style(colorFromUint32(color));
+    ctx.fill_circle(cx, cy, r);
   }
 
   void strokeCircle(int cx, int cy, int r, uint32_t color) override {
-    if (!hasContext) {
-      return;
-    }
-    context.set_comp_op(BL_COMP_OP_SRC_OVER);
-    context.set_stroke_style(colorFromUint32(color));
-    context.set_stroke_width(1.0);
-    context.stroke_circle(cx, cy, r);
+    ctx.set_comp_op(BL_COMP_OP_SRC_OVER);
+    ctx.set_stroke_style(colorFromUint32(color));
+    ctx.set_stroke_width(1.0);
+    ctx.stroke_circle(cx, cy, r);
   }
 
-  void *devGetBlend2dContext() override { return &context; }
+  void save() override { ctx.save(); }
+
+  void restore() override { ctx.restore(); }
+
+  void translate(float x, float y) override { ctx.translate(x, y); }
+
+  void rotate(float degree) override { ctx.rotate(degree); }
+
+  void scale(float sx, float sy) override { ctx.scale(sx, sy); }
+
+  void *devGetBlend2dContext() override { return &ctx; }
 
   const ImageData &getImageData() const override { return imageData; }
 };

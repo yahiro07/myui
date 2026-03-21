@@ -1,5 +1,6 @@
 #include "../core/drawings/renderer.h"
 #include "../core/ui-actor.h"
+#include "../core/ui-frame-driver.h"
 #include "../editor-frame/editor-frame.h"
 #include "window.h"
 
@@ -13,17 +14,17 @@ public:
     auto editorFrame = createEditorFrame();
     editorFrame->attachToParent(window->getRootViewHandle());
     auto renderer = createBlend2dRenderer();
-    UiActor ui{*renderer};
+    auto dc = static_cast<DrawingContext *>(renderer.get());
+    UiFrameDriver frameDriver{*dc};
     editorFrame->subscribePointer(
-        [&ui](const PointerEvent &e) { ui.handlePointerEventInput(e); });
+        [&](const PointerEvent &e) { frameDriver.handlePointerEventInput(e); });
+
     editorFrame->setRenderCallback([&](int w, int h) {
       renderer->resize(w, h);
       renderer->beginFrame(0x00000000);
-      renderFn(ui, w, h);
+      frameDriver.runFrame(renderFn, w, h);
       renderer->endFrame();
       editorFrame->setImageData(renderer->getImageData());
-      ui.updatePointerStateOnFrameEnd();
-      ui.debugFirstFrame = false;
     });
     window->runEventLoop();
     editorFrame->clearRenderCallback();
