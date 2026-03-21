@@ -1,8 +1,9 @@
+#include "../core/bridge-types.h"
 #include "./drawing-types.h"
 #include <cstdint>
 #include <memory>
 
-namespace myui {
+namespace myui::internal {
 
 class Renderer : public DrawingContext {
 public:
@@ -16,4 +17,4 @@ public:
 
 std::unique_ptr<Renderer> createBlend2dRenderer();
 
-} // namespace myui
+} // namespace myui::internal

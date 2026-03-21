@@ -1,11 +1,10 @@
 #pragma once
 
-#include "../core/bridge-types.h"
-#include "../core/core-types.h"
+#include "../../core/bridge-types.h"
 #include <functional>
 #include <memory>
 
-namespace myui {
+namespace myui::internal {
 
 class IEditorFrame {
 public:
@@ -18,8 +17,8 @@ public:
   setRenderCallback(std::function<void(int width, int height)> callback) = 0;
   virtual void clearRenderCallback() = 0;
 
-  virtual void subscribePointer(
-      std::function<void(const internal::PointerEvent &)> callback) = 0;
+  virtual void
+  subscribePointer(std::function<void(const PointerEvent &)> callback) = 0;
   virtual void unsubscribePointer() = 0;
 
   virtual void setImageData(const ImageData &imageData) = 0;
@@ -27,4 +26,4 @@ public:
 
 std::unique_ptr<IEditorFrame> createEditorFrame(); // cocoa/windows/x11
 
-} // namespace myui
+} // namespace myui::internal

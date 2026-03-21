@@ -339,6 +339,6 @@ public:
 
 @end
 
-std::unique_ptr<IEditorFrame> myui::createEditorFrame() {
+std::unique_ptr<IEditorFrame> myui::internal::createEditorFrame() {
   return std::make_unique<CocoaEditorFrame>();
 }

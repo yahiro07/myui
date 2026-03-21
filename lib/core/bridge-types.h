@@ -1,6 +1,15 @@
 #pragma once
+#include <cstdint>
 
 namespace myui::internal {
+
+struct ImageData {
+  const uint8_t *buffer = nullptr;
+  int width = 0;
+  int height = 0;
+  int strideBytes = 0;
+};
+
 enum class PointerEventType {
   Down,
   Move,

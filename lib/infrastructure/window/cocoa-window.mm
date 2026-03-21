@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <memory>
 
-using namespace myui;
+using namespace myui::internal;
 
 class CocoaWindow;
 
@@ -134,6 +134,6 @@ public:
 
 @end
 
-std::unique_ptr<IWindow> myui::createWindow() {
+std::unique_ptr<IWindow> myui::internal::createWindow() {
   return std::make_unique<CocoaWindow>();
 }

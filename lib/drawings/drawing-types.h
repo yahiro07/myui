@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <cstdint>
 
+class BLContext;
+
 namespace myui {
 
 class DrawingContext {
@@ -20,14 +22,7 @@ public:
 
   // expose blend2d context directly in development phase, not for production
   // use
-  virtual void *devGetBlend2dContext() = 0; // returning BLContext*
-};
-
-struct ImageData {
-  const uint8_t *buffer = nullptr;
-  int width = 0;
-  int height = 0;
-  int strideBytes = 0;
+  virtual BLContext *devGetBlend2dContext() = 0; // returning BLContext*
 };
 
 } // namespace myui

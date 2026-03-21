@@ -2,12 +2,18 @@
 #include "../core/bridge-types.h"
 #include "../core/ui-frame-driver.h"
 #include "../drawings/renderer.h"
-#include "../editor-frame/editor-frame.h"
+#include "../infrastructure/editor-frame/editor-frame.h"
 #include <functional>
 
 namespace myui {
 
 class EditorIntegration {
+private:
+  using IEditorFrame = internal::IEditorFrame;
+  using Renderer = internal::Renderer;
+  using PointerEvent = internal::PointerEvent;
+
+private:
   std::unique_ptr<IEditorFrame> editorFrame;
   std::unique_ptr<Renderer> renderer;
   std::unique_ptr<UiFrameDriver> frameDriver;
@@ -27,9 +33,8 @@ public:
   }
 
   void setup(internal::UiProgramFn renderFn) {
-    editorFrame =
-        std::unique_ptr<myui::IEditorFrame>(myui::createEditorFrame());
-    renderer = createBlend2dRenderer();
+    editorFrame = std::unique_ptr<IEditorFrame>(internal::createEditorFrame());
+    renderer = internal::createBlend2dRenderer();
     auto dc = static_cast<DrawingContext *>(renderer.get());
     frameDriver = std::make_unique<UiFrameDriver>(*dc);
 
@@ -42,7 +47,7 @@ public:
       renderer->endFrame();
       editorFrame->setImageData(renderer->getImageData());
     });
-    editorFrame->subscribePointer([this](const internal::PointerEvent &e) {
+    editorFrame->subscribePointer([this](const PointerEvent &e) {
       if (frameDriver)
         frameDriver->handlePointerEventInput(e);
     });

@@ -1,7 +1,7 @@
 #include "renderer.h"
 #include <blend2d/blend2d.h>
 
-namespace myui {
+namespace myui::internal {
 
 static BLRgba32 colorFromUint32(uint32_t color) { return BLRgba32(color); }
 
@@ -105,7 +105,7 @@ public:
 
   void scale(float sx, float sy) override { ctx.scale(sx, sy); }
 
-  void *devGetBlend2dContext() override { return &ctx; }
+  BLContext *devGetBlend2dContext() override { return &ctx; }
 
   const ImageData &getImageData() const override { return imageData; }
 };
@@ -114,4 +114,4 @@ std::unique_ptr<Renderer> createBlend2dRenderer() {
   return std::make_unique<Blend2dRendererImpl>();
 }
 
-} // namespace myui
+} // namespace myui::internal

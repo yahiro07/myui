@@ -3,8 +3,8 @@
 #include "../core/ui-actor.h"
 #include "../core/ui-frame-driver.h"
 #include "../drawings/renderer.h"
-#include "../editor-frame/editor-frame.h"
-#include "../window/window.h"
+#include "../infrastructure/editor-frame/editor-frame.h"
+#include "../infrastructure/window/window.h"
 
 namespace myui {
 
@@ -12,10 +12,10 @@ class MyuiApplication {
 public:
   MyuiApplication() {};
   virtual void run(std::function<void(UiActor &, int, int)> renderFn) {
-    auto window = createWindow();
-    auto editorFrame = createEditorFrame();
+    auto window = internal::createWindow();
+    auto editorFrame = internal::createEditorFrame();
     editorFrame->attachToParent(window->getRootViewHandle());
-    auto renderer = createBlend2dRenderer();
+    auto renderer = internal::createBlend2dRenderer();
     auto dc = static_cast<DrawingContext *>(renderer.get());
     UiFrameDriver frameDriver{*dc};
     editorFrame->subscribePointer([&](const internal::PointerEvent &e) {
