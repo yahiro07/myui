@@ -1,4 +1,4 @@
-#include "../../lib/window/application.h"
+#include <myui/application.h>
 
 using namespace myui;
 

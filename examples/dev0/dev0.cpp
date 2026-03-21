@@ -1,12 +1,8 @@
-#include "../../lib/core/ui-actor.h"
-#include "../../lib/core/ui-frame-driver.h"
-#include "../../lib/drawings/renderer.h"
-#include "../../lib/editor-frame/editor-frame.h"
-#include "../../lib/window/window.h"
 #include <algorithm>
 #include <cstdio>
 #include <functional>
 #include <memory>
+#include <myui/application.h>
 
 namespace dev0 {
 
