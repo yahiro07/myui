@@ -19,6 +19,13 @@ private:
   std::unique_ptr<UiFrameDriver> frameDriver;
 
 public:
+  EditorIntegration() {
+    editorFrame = std::unique_ptr<IEditorFrame>(internal::createEditorFrame());
+    renderer = internal::createBlend2dRenderer();
+    auto dc = static_cast<DrawingContext *>(renderer.get());
+    frameDriver = std::make_unique<UiFrameDriver>(*dc);
+  }
+  ~EditorIntegration() { teardown(); }
   void attachToParent(void *parent) {
     if (editorFrame)
       editorFrame->attachToParent(parent);
@@ -33,11 +40,8 @@ public:
   }
 
   void setup(internal::UiProgramFn renderFn) {
-    editorFrame = std::unique_ptr<IEditorFrame>(internal::createEditorFrame());
-    renderer = internal::createBlend2dRenderer();
-    auto dc = static_cast<DrawingContext *>(renderer.get());
-    frameDriver = std::make_unique<UiFrameDriver>(*dc);
-
+    if (!(editorFrame && renderer && frameDriver))
+      return;
     editorFrame->setRenderCallback([this, renderFn](int w, int h) {
       if (!renderer || !frameDriver)
         return;

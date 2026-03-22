@@ -1,3 +1,4 @@
+#pragma once
 #include "../core/bridge-types.h"
 #include "./drawing-types.h"
 #include <cstdint>
