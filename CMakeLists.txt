@@ -25,5 +25,9 @@ FetchContent_MakeAvailable(blend2d)
 
 add_subdirectory(lib)
 
-add_subdirectory(examples/hello)
-add_subdirectory(examples/dev0)
+option(MYUI_BUILD_EXAMPLES "Build examples" OFF)
+
+if(MYUI_BUILD_EXAMPLES)
+  add_subdirectory(examples/hello)
+  add_subdirectory(examples/dev0)
+endif()
