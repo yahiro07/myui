@@ -2,7 +2,7 @@
 #include "internal-helper.h"
 #include <cstdio>
 
-namespace myui::internal {
+namespace briq::internal {
 
 template <class F>
 void drawCoreStatic(F &&fn, internal::Node *node, bool centered,
@@ -34,4 +34,4 @@ void drawCoreStatic(F &&fn, internal::Node *node, bool centered,
   dc.restore();
 }
 
-} // namespace myui::internal
+} // namespace briq::internal

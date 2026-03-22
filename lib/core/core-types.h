@@ -1,7 +1,7 @@
 #pragma once
 #include "../drawings/drawing-types.h"
 
-namespace myui {
+namespace briq {
 
 struct InputState {
   int x;
@@ -18,4 +18,4 @@ struct InputState {
 
 enum UiLayoutMode { LA_Default, LA_HStack, LA_VStack, LA_HCentered };
 
-} // namespace myui
+} // namespace briq

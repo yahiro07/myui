@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <memory>
 
-namespace myui::internal {
+namespace briq::internal {
 
 class Renderer : public DrawingContext {
 public:
@@ -20,4 +20,4 @@ public:
 
 std::unique_ptr<Renderer> createBlend2dRenderer();
 
-} // namespace myui::internal
+} // namespace briq::internal

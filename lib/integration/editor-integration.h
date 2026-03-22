@@ -5,7 +5,7 @@
 #include "../infrastructure/editor-frame/editor-frame.h"
 #include <functional>
 
-namespace myui {
+namespace briq {
 
 class EditorIntegration {
 private:
@@ -74,4 +74,4 @@ public:
   }
 };
 
-} // namespace myui
+} // namespace briq

@@ -5,7 +5,7 @@
 #include <source_location>
 #include <unordered_map>
 
-namespace myui::internal {
+namespace briq::internal {
 
 class TreeBuilderBus {
 
@@ -52,4 +52,4 @@ public:
   }
 };
 
-}; // namespace myui::internal
+}; // namespace briq::internal

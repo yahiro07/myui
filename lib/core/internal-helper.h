@@ -2,7 +2,7 @@
 #include "internal-types.h"
 #include <source_location>
 
-namespace myui::internal {
+namespace briq::internal {
 
 inline size_t createBoxId(const std::source_location &loc, int index) {
   size_t h = 1469598103934665603ull;
@@ -52,4 +52,4 @@ static void createLocalInputState(InputState &input, InputState &gInputState,
   }
 }
 
-} // namespace myui::internal
+} // namespace briq::internal

@@ -2,7 +2,7 @@
 #include "internal-types.h"
 #include <stack>
 
-namespace myui::internal {
+namespace briq::internal {
 
 class TreeBuilder {
 private:
@@ -43,4 +43,4 @@ public:
   }
 };
 
-} // namespace myui::internal
+} // namespace briq::internal

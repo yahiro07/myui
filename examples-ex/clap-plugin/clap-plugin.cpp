@@ -1,6 +1,6 @@
-#include <myui/editor.h>
+#include <briq/editor.h>
 
-using namespace myui;
+using namespace briq;
 
 // this is a pseudo code integrated into clap plugin
 
@@ -14,7 +14,7 @@ void renderRoot(UiActor &ui, int w, int h) {
 
 // clap plugin usage (wrapper for clap_plugin_gui_t)
 class ClapController {
-  myui::EditorIntegration editorIntegration;
+  briq::EditorIntegration editorIntegration;
 
 public:
   bool guiCreate() {

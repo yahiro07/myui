@@ -3,7 +3,7 @@
 #include "node-handle.h"
 #include <source_location>
 
-namespace myui {
+namespace briq {
 
 void drawNodeWithTranslate(DrawingContext &dc, internal::Node *node,
                            internal::NodeBox &box, InputState &gInputState);
@@ -35,4 +35,4 @@ public:
   }
 };
 
-} // namespace myui
+} // namespace briq

@@ -6,7 +6,7 @@
 
 class BLContext;
 
-namespace myui {
+namespace briq {
 
 class DrawingContext {
 public:
@@ -27,4 +27,4 @@ public:
   virtual BLContext *devGetBlend2dContext() = 0; // returning BLContext*
 };
 
-} // namespace myui
+} // namespace briq

@@ -1,4 +1,4 @@
-set(NAME myui-window)
+set(NAME briq-window)
 add_library(${NAME} STATIC)
 
 target_sources(${NAME} PRIVATE cocoa-window.mm)

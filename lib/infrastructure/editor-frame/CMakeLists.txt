@@ -1,4 +1,4 @@
-set(NAME myui-editor-frame)
+set(NAME briq-editor-frame)
 add_library(${NAME} STATIC)
 
 target_sources(${NAME} PRIVATE editor-frame.mm)

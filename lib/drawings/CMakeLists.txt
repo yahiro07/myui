@@ -1,4 +1,4 @@
-set(NAME myui-drawings)
+set(NAME briq-drawings)
 add_library(${NAME} STATIC)
 
 target_sources(${NAME} PRIVATE renderer.cpp)

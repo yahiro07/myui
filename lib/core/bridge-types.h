@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-namespace myui::internal {
+namespace briq::internal {
 
 struct ImageData {
   const uint8_t *buffer = nullptr;
@@ -23,4 +23,4 @@ struct PointerEvent {
   int buttons; // 1:left, 2:center, 4:right
 };
 
-} // namespace myui::internal
+} // namespace briq::internal

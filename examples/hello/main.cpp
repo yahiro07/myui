@@ -1,9 +1,9 @@
-#include <myui/application.h>
+#include <briq/application.h>
 
-using namespace myui;
+using namespace briq;
 
 int main(int argc, char *argv[]) {
-  MyuiApplication app;
+  BriqApplication app;
   app.loadFont("mainFont", "examples/fonts/Nurom-Bold.ttf");
   app.run([](UiActor &ui, int w, int h) {
     auto root = ui.rootBox(w, h).hCenter();

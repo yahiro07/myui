@@ -2,7 +2,7 @@
 #include "bridge-types.h"
 #include "ui-actor.h"
 
-namespace myui {
+namespace briq {
 
 static void affectPointerEventToInputState(InputState &input,
                                            const internal::PointerEvent &e) {
@@ -66,4 +66,4 @@ public:
   }
 };
 
-} // namespace myui
+} // namespace briq

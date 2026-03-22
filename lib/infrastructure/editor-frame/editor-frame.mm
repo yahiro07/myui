@@ -8,8 +8,8 @@
 #include <functional>
 #include <memory>
 
-using namespace myui;
-using namespace myui::internal;
+using namespace briq;
+using namespace briq::internal;
 
 class CocoaEditorFrame;
 
@@ -339,6 +339,6 @@ public:
 
 @end
 
-std::unique_ptr<IEditorFrame> myui::internal::createEditorFrame() {
+std::unique_ptr<IEditorFrame> briq::internal::createEditorFrame() {
   return std::make_unique<CocoaEditorFrame>();
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 
-namespace myui::internal {
+namespace briq::internal {
 
 class IWindow {
 public:
@@ -12,4 +12,4 @@ public:
 
 std::unique_ptr<IWindow> createWindow(); // cocoa/windows/x11
 
-} // namespace myui::internal
+} // namespace briq::internal

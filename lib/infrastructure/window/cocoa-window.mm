@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <memory>
 
-using namespace myui::internal;
+using namespace briq::internal;
 
 class CocoaWindow;
 
@@ -46,7 +46,7 @@ private:
       return false;
     }
 
-    [window setTitle:@"myui"];
+    [window setTitle:@"briq"];
     [window center];
     [window setAcceptsMouseMovedEvents:YES];
     [window setDelegate:delegate];
@@ -134,6 +134,6 @@ public:
 
 @end
 
-std::unique_ptr<IWindow> myui::internal::createWindow() {
+std::unique_ptr<IWindow> briq::internal::createWindow() {
   return std::make_unique<CocoaWindow>();
 }

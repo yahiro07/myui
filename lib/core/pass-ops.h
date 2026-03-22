@@ -3,11 +3,11 @@
 #include "layouter.h"
 #include "tree-builder-bus.h"
 
-namespace myui {
+namespace briq {
 class UiActor;
 }
 
-namespace myui::internal {
+namespace briq::internal {
 
 using UiProgramFn = std::function<void(UiActor &, int, int)>;
 using CachedBoxMap = std::unordered_map<size_t, NodeBox>;
@@ -74,4 +74,4 @@ public:
   }
 };
 
-} // namespace myui::internal
+} // namespace briq::internal

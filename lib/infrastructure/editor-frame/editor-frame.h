@@ -4,7 +4,7 @@
 #include <functional>
 #include <memory>
 
-namespace myui::internal {
+namespace briq::internal {
 
 class IEditorFrame {
 public:
@@ -26,4 +26,4 @@ public:
 
 std::unique_ptr<IEditorFrame> createEditorFrame(); // cocoa/windows/x11
 
-} // namespace myui::internal
+} // namespace briq::internal

@@ -5,9 +5,9 @@
 #include "../infrastructure/window/window.h"
 #include "editor-integration.h"
 
-namespace myui {
+namespace briq {
 
-class MyuiApplication {
+class BriqApplication {
 private:
   using IWindow = internal::IWindow;
   using IEditorFrame = internal::IEditorFrame;
@@ -19,12 +19,12 @@ private:
   std::unique_ptr<EditorIntegration> editorIntegration;
 
 public:
-  MyuiApplication() {
+  BriqApplication() {
     window = internal::createWindow();
     editorIntegration = std::make_unique<EditorIntegration>();
     editorIntegration->attachToParent(window->getRootViewHandle());
   };
-  ~MyuiApplication() {
+  ~BriqApplication() {
     if (editorIntegration) {
       editorIntegration->removeFromParent();
       editorIntegration->teardown();
@@ -49,4 +49,4 @@ public:
   }
 };
 
-} // namespace myui
+} // namespace briq

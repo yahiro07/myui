@@ -2,7 +2,7 @@
 #include "internal-types.h"
 #include <functional>
 
-namespace myui::internal {
+namespace briq::internal {
 
 inline NodeBox createNodeBox(uint64_t id, int x, int y, int w, int h,
                              bool skip) {
@@ -73,4 +73,4 @@ inline void flushLayout(Node *rootNode,
   applyLayout(rootNode, rootBox);
 }
 
-} // namespace myui::internal
+} // namespace briq::internal

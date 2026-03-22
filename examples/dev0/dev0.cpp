@@ -1,12 +1,12 @@
 #include <algorithm>
+#include <briq/application.h>
 #include <cstdio>
 #include <functional>
 #include <memory>
-#include <myui/application.h>
 
 namespace dev0 {
 
-using namespace myui;
+using namespace briq;
 
 class ParametersBridge {
 public:
@@ -111,7 +111,7 @@ auto createRootView(AppModel &appModel) {
 
 void entry() {
   printf("dev0 entry\n");
-  MyuiApplication app;
+  BriqApplication app;
   app.loadFont("mainFont", "examples/fonts/Nurom-Bold.ttf");
   ParametersBridge parametersBridge;
   AppModel appModel(parametersBridge);

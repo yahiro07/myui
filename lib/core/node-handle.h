@@ -1,7 +1,7 @@
 #pragma once
 #include "pass-ops.h"
 
-namespace myui {
+namespace briq {
 
 class NodeHandle {
 private:
@@ -55,4 +55,4 @@ public:
   }
 };
 
-} // namespace myui
+} // namespace briq

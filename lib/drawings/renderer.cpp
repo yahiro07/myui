@@ -2,7 +2,7 @@
 #include <blend2d/blend2d.h>
 #include <unordered_map>
 
-namespace myui::internal {
+namespace briq::internal {
 
 static BLRgba32 colorFromUint32(uint32_t color) { return BLRgba32(color); }
 
@@ -171,4 +171,4 @@ std::unique_ptr<Renderer> createBlend2dRenderer() {
   return std::make_unique<Blend2dRendererImpl>();
 }
 
-} // namespace myui::internal
+} // namespace briq::internal

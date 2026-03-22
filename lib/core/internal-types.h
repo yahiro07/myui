@@ -1,7 +1,7 @@
 #pragma once
 #include "core-types.h"
 
-namespace myui::internal {
+namespace briq::internal {
 struct Node {
   uint64_t id;
   int w;
@@ -23,4 +23,4 @@ struct NodeBox {
   bool skip;
 };
 
-} // namespace myui::internal
+} // namespace briq::internal
