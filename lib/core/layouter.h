@@ -1,10 +1,12 @@
 #pragma once
 #include "internal-types.h"
+#include <functional>
 
 namespace myui::internal {
 
-inline NodeBox createNodeBox(uint64_t id, int x, int y, int w, int h) {
-  return {id, x, y, w, h};
+inline NodeBox createNodeBox(uint64_t id, int x, int y, int w, int h,
+                             bool skip) {
+  return {id, x, y, w, h, skip};
 }
 
 static void iterChildNodes(Node *parentNode,
@@ -34,7 +36,8 @@ layoutChildBoxes(Node *parentNode, NodeBox &parentBox,
     iterChildNodes(parentNode, [&](Node *node) {
       auto w = node->w == -1 ? parentBox.w : node->w;
       auto h = node->h == -1 ? parentBox.h : node->h;
-      auto box = createNodeBox(node->id, posX, yCenter - h / 2, w, h);
+      auto box =
+          createNodeBox(node->id, posX, yCenter - h / 2, w, h, node->skip);
       destFn(node, box);
       posX += w;
       posX += parentNode->gap;
@@ -43,15 +46,13 @@ layoutChildBoxes(Node *parentNode, NodeBox &parentBox,
   } else {
     auto posX = parentBox.x;
     auto posY = parentBox.y;
-    auto node = parentNode->firstChild;
-    while (node) {
+    iterChildNodes(parentNode, [&](Node *node) {
       auto w = node->w == -1 ? parentBox.w : node->w;
       auto h = node->h == -1 ? parentBox.h : node->h;
-      auto box = createNodeBox(node->id, posX, posY, w, h);
+      auto box = createNodeBox(node->id, posX, posY, w, h, node->skip);
       destFn(node, box);
       posX += w;
-      node = node->nextSibling;
-    }
+    });
   }
 }
 
@@ -67,7 +68,8 @@ inline void flushLayout(Node *rootNode,
         }
       };
 
-  NodeBox rootBox = createNodeBox(rootNode->id, 0, 0, rootNode->w, rootNode->h);
+  NodeBox rootBox = createNodeBox(rootNode->id, 0, 0, rootNode->w, rootNode->h,
+                                  rootNode->skip);
   applyLayout(rootNode, rootBox);
 }
 

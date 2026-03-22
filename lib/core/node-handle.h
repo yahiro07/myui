@@ -1,32 +1,22 @@
 #pragma once
-#include "tree-builder.h"
-#include <functional>
+#include "pass-ops.h"
 
 namespace myui {
-
-template <class> inline constexpr bool always_false_v = false;
-
-struct UiActorRoamingObject {
-  internal::TreeBuilder &treeBuilder;
-  bool &debugFirstFrame;
-};
 
 class NodeHandle {
 private:
   using Node = internal::Node;
+  using PassOps = internal::PassOps;
+  using PaintPassOps = internal::PaintPassOps;
 
 private:
+  PassOps &passOps;
   Node &node;
-  UiActorRoamingObject &ro;
 
 public:
-  NodeHandle(Node &node, UiActorRoamingObject &ro) : node(node), ro(ro) {}
+  NodeHandle(Node &node, PassOps &passOps) : node(node), passOps(passOps) {}
 
 private:
-  void pushParent(Node *node) { ro.treeBuilder.pushParent(node); }
-
-  void popParent() { ro.treeBuilder.popParent(); }
-
   void setNodeLayout(Node &node, UiLayoutMode layout, int gap) {
     node.layout = layout;
     node.gap = gap;
@@ -40,50 +30,27 @@ public:
 
 public:
   template <class F> NodeHandle &sub(F &&fn) {
-    pushParent(&node);
+    passOps.pushParent(&node);
     fn();
-    popParent();
+    passOps.popParent();
     return *this;
   }
 
 private:
-  void setDrawFn(Node &node,
-                 std::function<void(DrawingContext &, InputState &)> drawFn,
-                 bool centered) {
-    node.drawFn = std::move(drawFn);
-    node.drawCentered = centered;
-  }
-
-  template <class F>
-  std::function<void(DrawingContext &, InputState &)> wrapDrawFn(F &&fn) {
-    if constexpr (requires {
-                    fn(std::declval<DrawingContext &>(),
-                       std::declval<InputState &>());
-                  }) {
-      return std::forward<F>(fn);
-    } else if constexpr (requires { fn(std::declval<DrawingContext &>()); }) {
-      return [stored = std::forward<F>(fn)](
-                 DrawingContext &dc, InputState &input) mutable { stored(dc); };
-    } else {
-      // static_assert(false, "draw() requires fn(dc, input) or fn(dc)");
-      static_assert(always_false_v<F>,
-                    "draw() requires fn(dc, input) or fn(dc)");
+  template <class F> void drawCore(F &&fn, Node *node, bool centered) {
+    if (PaintPassOps *paintOps = dynamic_cast<PaintPassOps *>(&passOps)) {
+      // draw only when paint phase
+      paintOps->drawCore(fn, node, centered);
     }
   }
 
 public:
   template <class F> NodeHandle &draw(F &&fn) {
-    if (ro.debugFirstFrame) {
-      printf("size of drawFn: %llu %d\n", node.id, (int)sizeof(fn));
-    }
-    setDrawFn(node, wrapDrawFn(std::forward<F>(fn)), false);
+    drawCore(fn, &node, false);
     return *this;
   }
   template <class F> NodeHandle &drawC(F &&fn) {
-    if (ro.debugFirstFrame) {
-      printf("size of drawFn: %llu %d\n", node.id, (int)sizeof(fn));
-    }
-    setDrawFn(node, wrapDrawFn(std::forward<F>(fn)), true);
+    drawCore(fn, &node, true);
     return *this;
   }
 };

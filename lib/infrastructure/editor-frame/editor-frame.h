@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../core/core-types.h"
+#include "../../core/bridge-types.h"
 #include <functional>
 #include <memory>
 
-namespace myui {
+namespace myui::internal {
 
 class IEditorFrame {
 public:
@@ -26,4 +26,4 @@ public:
 
 std::unique_ptr<IEditorFrame> createEditorFrame(); // cocoa/windows/x11
 
-} // namespace myui
+} // namespace myui::internal

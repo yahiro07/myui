@@ -5,11 +5,13 @@
 namespace myui::internal {
 
 class TreeBuilder {
-public:
+private:
   Node *rootNode = nullptr;
   Node *currentParent = nullptr;
   std::stack<Node *> parentStack;
 
+public:
+  Node *getRootNode() { return rootNode; }
   void clear() {
     rootNode = nullptr;
     currentParent = nullptr;
