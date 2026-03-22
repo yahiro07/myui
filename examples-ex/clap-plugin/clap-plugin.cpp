@@ -18,6 +18,7 @@ class ClapController {
 
 public:
   bool guiCreate() {
+    editorIntegration.loadFont("mainFont", "path/to/ttf_or_otf");
     editorIntegration.setup(renderRoot);
     return true;
   }

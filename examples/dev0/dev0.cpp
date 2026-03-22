@@ -40,7 +40,8 @@ public:
   bool panelVisible = false;
 };
 
-void addKnobA(UiActor &ui, AppModel &model, int paramId, int color) {
+void addKnobA(UiActor &ui, AppModel &model, int paramId, int color,
+              std::string label) {
 
   ui.box(100, 100).drawC([&](auto &dc, auto &input) {
     auto &params = model.parametersBridge;
@@ -52,8 +53,12 @@ void addKnobA(UiActor &ui, AppModel &model, int paramId, int color) {
     }
     auto value = params.get(paramId);
     auto angle = (value * 2 - 1) * 135;
+    dc.save();
     dc.rotate(angle * 3.14159 / 180);
     dc.fillRect(-3, -50, 6, 25, 0xffff8800);
+    dc.restore();
+    dc.drawText(label, 0, 70, "mainFont", 24, 0xff0000ff, true);
+
     if (hit && input.hold) {
       auto newValue = std::clamp(value - input.deltaY * 0.01f, 0.0f, 1.0f);
       params.performEdit(paramId, newValue);
@@ -86,7 +91,7 @@ auto createRootView(AppModel &appModel) {
       auto panel = ui.box(500, 300).hCenter(20);
       panel.draw([](auto &dc) { dc.fillRect(0, 0, 500, 300, 0xffaabbcc); });
       panel.sub([&] {
-        addKnobA(ui, appModel, 0, 0xff0000ff);
+        addKnobA(ui, appModel, 0, 0xff0000ff, "pitch");
         addKnobB(ui, appModel.parametersBridge);
         auto knobC = ui.box(100, 100);
         knobC.draw([&](auto &dc, auto &input) {
@@ -107,6 +112,7 @@ auto createRootView(AppModel &appModel) {
 void entry() {
   printf("dev0 entry\n");
   MyuiApplication app;
+  app.loadFont("mainFont", "examples/fonts/Nurom-Bold.ttf");
   ParametersBridge parametersBridge;
   AppModel appModel(parametersBridge);
   app.run(createRootView(appModel));

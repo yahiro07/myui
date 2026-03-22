@@ -34,6 +34,13 @@ public:
       window.reset();
     }
   }
+
+  void loadFont(std::string fontKey, std::string fontFilePath) {
+    if (editorIntegration) {
+      editorIntegration->loadFont(fontKey, fontFilePath);
+    }
+  }
+
   virtual void run(std::function<void(UiActor &, int, int)> renderFn) {
     if ((window && editorIntegration)) {
       editorIntegration->setup(renderFn);

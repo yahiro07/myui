@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <string>
 
 class BLContext;
 
@@ -19,7 +20,8 @@ public:
   virtual void translate(float x, float y) = 0;
   virtual void rotate(float degree) = 0;
   virtual void scale(float sx, float sy) = 0;
-
+  virtual void drawText(std::string text, int ox, int oy, std::string fontKey,
+                        int size, uint32_t color, bool centered) = 0;
   // expose blend2d context directly in development phase, not for production
   // use
   virtual BLContext *devGetBlend2dContext() = 0; // returning BLContext*

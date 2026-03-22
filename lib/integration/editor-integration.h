@@ -26,6 +26,13 @@ public:
     frameDriver = std::make_unique<UiFrameDriver>(*dc);
   }
   ~EditorIntegration() { teardown(); }
+
+  void loadFont(std::string fontKey, std::string fontFilePath) {
+    if (renderer) {
+      renderer->loadFont(fontKey, fontFilePath);
+    }
+  }
+
   void attachToParent(void *parent) {
     if (editorFrame)
       editorFrame->attachToParent(parent);
